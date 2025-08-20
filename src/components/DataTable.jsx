@@ -53,21 +53,44 @@ const DataTable = ({
     setDeleteModal({ isOpen: false, itemId: null, itemUrl: "" });
   };
 
-  const getDisplayName = (url) => {
-    try {
-      const fullUrl = url.startsWith("http") ? url : `https://${url}`;
-      const hostname = new URL(fullUrl).hostname;
-      const domain = hostname.replace(/^www\./, "");
-      const siteName = domain.split(".")[0];
+  // const getDisplayName = (url) => {
+  //   try {
+  //     const fullUrl = url.startsWith("http") ? url : `https://${url}`;
+  //     const hostname = new URL(fullUrl).hostname;
+  //     const domain = hostname.replace(/^www\./, "");
+  //     const siteName = domain.split(".")[0];
 
-      return siteName.charAt(0).toUpperCase() + siteName.slice(1);
-    } catch (error) {
-      return url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0] || url;
-    }
-  };
+  //     return siteName.charAt(0).toUpperCase() + siteName.slice(1);
+  //   } catch (error) {
+  //     return url;
+  //   }
+  // };
+
+
+const getDisplayName = (url) => {
+  // Simple domain check: contains a dot and no spaces
+  const isDomain = url.includes(".") && !url.includes(" ");
+
+  if (!isDomain) {
+    // Return plain text as entered (with first letter capitalized if you want)
+    return url.charAt(0).toUpperCase() + url.slice(1);
+  }
+
+  try {
+    const fullUrl = url.startsWith("http") ? url : `https://${url}`;
+    const hostname = new URL(fullUrl).hostname;
+    const domain = hostname.replace(/^www\./, "");
+    const siteName = domain.split(".")[0];
+    return siteName.charAt(0).toUpperCase() + siteName.slice(1);
+  } catch {
+    return url;
+  }
+};
+
+
 
   return (
-    <div className="table-data w-full flex justify-center">
+    <div className="table-data w-full flex justify-center mb-10">
       <table class="table-auto w-3/4 text-center rounded-lg overflow-hidden max-sm:w-[95%] max-sm:table-fixed">
         <thead className=" bg-yellow-400">
           <tr>
